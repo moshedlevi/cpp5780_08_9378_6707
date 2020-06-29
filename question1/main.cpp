@@ -11,6 +11,7 @@
 #include "BidirectionalList.h"
 //#include "RoundList.h"
 #include "menu.h"
+#include "funcs.h"
 
 
 using namespace std;
@@ -76,6 +77,23 @@ int main() {
 
 			break;
 
+		case MAX_VALUE:
+			{
+				ListIt it = max(ls1.begin(), ls1.end());
+				cout << *it << endl;
+
+				break;
+			}
+		case SORT:
+			sort<ListIt>(ls1.begin(), ls1.rbegin(),
+				[](typename ListIt::Reference varA, typename ListIt::Reference varB) {
+ 					if (varA < varB)
+						return -1;
+					else if (varA == varB)
+						return 0;
+					else
+						return 1; });
+			break;
 		default:
 			cout << "ERROR!" << endl;
 		}

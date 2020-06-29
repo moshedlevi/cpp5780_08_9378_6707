@@ -50,14 +50,14 @@ class List {
     
 public:
     class Iterator : ForwardIterator<Node, T> {
+    private:
+        void advance() { _p = _p->next(); }
+    public:
         using ValueType = T;
         using Pointer = Node*;
         using Reference = T&;
         using ForwardIterator<Node, T>::_p;
 
-    private:
-        void advance() { _p = _p->next(); }
-    public:
         Iterator(Pointer p) : ForwardIterator<Node, T>(p) {}
         Reference operator*() { return _p->value(); }
 

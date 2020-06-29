@@ -55,15 +55,16 @@ class BidirectionalList : public List<T> {
     
 public:
     class Iterator : public BidirectionalIterator<BiNode, T> {
-        using ValueType = T;
-        using Pointer = BiNode*;
-        using Reference = T&;
-        using ForwardIterator<BiNode, T>::_p;
 
     private:
         void advance() { _p = _p->next(); }
         void reverse() { _p = _p->prev();  }
     public:
+        using ValueType = T;
+        using Pointer = BiNode*;
+        using Reference = T&;
+        using ForwardIterator<BiNode, T>::_p;
+
         Iterator(Pointer p) : BidirectionalIterator<BiNode, T>(p) {}
         Reference operator*() { return _p->value(); }
 
@@ -74,8 +75,7 @@ public:
         Iterator& operator--() { reverse(); return *this; }
         Iterator operator--(int) { auto copy(*this); --(*this); return copy; }
 
-
-        Iterator& operator = (const Iterator& rhs) { _p = rhs._p; }
+        Iterator& operator = (const Iterator& rhs) { _p = rhs._p; return *this;}
     };
 
     const Iterator begin() const { return Iterator(head); }
@@ -283,6 +283,7 @@ bool BidirectionalList<T>::isEmpty() const {
 template <typename T>
 void BidirectionalList<T>::add(T val) {
     //Add a new value to the front of a Nodeed List
+
     BiNode* oldHead = head;
     head = new BiNode(val, head, nullptr);
 
