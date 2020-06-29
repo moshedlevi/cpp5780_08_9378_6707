@@ -60,13 +60,20 @@ int main() {
 				cout << "Not empty" << endl;
 			break;
 
-		case PRINT:
+		case PRINT_LIST:
 			
-			for (ListIt it = ls1.rbegin(); it != ls1.rend(); --it) {
-				--(*it);
+			for (ListIt it = ls1.begin(); it != ls1.end(); ++it) {
 				cout << *it << endl;
 			}
 			
+			break;
+
+		case PRINT_BILIST:
+
+			for (ListIt it = ls1.rbegin(); it != ls1.rend(); --it) {
+				cout << *it << endl;
+			}
+
 			break;
 
 		default:

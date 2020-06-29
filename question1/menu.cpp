@@ -25,7 +25,10 @@ const char* MenuOptionLine[LAST_MENU_OPTION + 1] {
 	"Search in the list",
 	"Clear the list",
 	"Check whether the list is empty",
-	"Print out the list"
+	"Print out the list using List",
+	"Print out the list using BidrectionalList",
+	"Return max value from list",
+	"Sort list based on values"
 };
 
 istream& operator>>(istream& in, MenuOption& rhs) {

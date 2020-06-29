@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="BidirectionalList.h" />
     <ClInclude Include="example.h" />
+    <ClInclude Include="funcs.h" />
     <ClInclude Include="iterators.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="menu.h" />
