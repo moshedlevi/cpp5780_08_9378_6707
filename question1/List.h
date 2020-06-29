@@ -101,7 +101,7 @@ public:
     T firstElement() const;
 
     // search in list by value
-    bool search(const T&) const;
+    bool search(const T) const;
 
     // get bool if list is empty
     bool isEmpty() const;
@@ -270,14 +270,15 @@ T List<T>::firstElement() const {
 
 // search in list by value
 template <typename T>
-bool List<T>::search(const T& val) const {
+bool List<T>::search(const T val) const {
     // loop to test each element
-    for (Node* p = head; p != nullptr; p = p->next())
-        if (val == p->value())
+    for (auto it = begin(); it != end(); ++it)
+        if (val == *it)
             return true;
     // not found
     return false;
 }
+
 
 // insert value by order in list
 template <typename T>

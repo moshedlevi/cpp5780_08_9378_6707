@@ -24,7 +24,7 @@ template <typename T> std::istream& operator >>(std::istream& in, BidirectionalL
 // Permits insertion and removal only from the front of the List
 //------------------------------------------------
 template <typename T>
-class BidirectionalList : List<T> {
+class BidirectionalList : public List<T> {
     using List<T>::Node;
     
     protected:
@@ -78,9 +78,9 @@ public:
         Iterator& operator = (const Iterator& rhs) { _p = rhs._p; }
     };
 
-    Iterator begin() { return Iterator(head); }
+    const Iterator& begin() { return Iterator(head); }
     Iterator end() { return Iterator(nullptr); }
-    Iterator rbegin() { return Iterator(tail); }
+    const Iterator& rbegin() { return Iterator(tail); }
     Iterator rend() { return Iterator(nullptr); }
 
 
@@ -113,7 +113,7 @@ public:
     T firstElement() const;
 
     // search in list by value
-    bool search(const T&) const;
+    bool search(const T) const;
 
     // get bool if list is empty
     bool isEmpty() const;
@@ -307,12 +307,23 @@ T BidirectionalList<T>::firstElement() const {
     return head->value();
 }
 
+/*
 // search in list by value
 template <typename T>
 bool BidirectionalList<T>::search(const T& val) const {
     // loop to test each element
     for (BiNode* p = head; p != nullptr; p = p->next())
         if (val == p->value())
+            return true;
+    // not found
+    return false;
+}*/
+// search in list by value
+template <typename T>
+bool BidirectionalList<T>::search(const T val) const {
+    // loop to test each element
+    for (auto it = begin(); it != end(); ++it)
+        if (val == *it)
             return true;
     // not found
     return false;
