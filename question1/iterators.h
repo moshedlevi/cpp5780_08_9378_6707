@@ -30,12 +30,12 @@ public:
 };
 
 template <typename T, typename R>
-class BidirectionalIterator : ForwardIterator<T,R> {
+class BidirectionalIterator : public ForwardIterator<T,R> {
     using ValueType = R;
     using Pointer = T*;
     using Reference = R&;
     using ForwardIterator<T, R>::_p;
-
+public:
     BidirectionalIterator(Pointer p) : ForwardIterator<T, R>(p) {}
     Reference operator*() { return *_p; }
     virtual void advance() = 0;

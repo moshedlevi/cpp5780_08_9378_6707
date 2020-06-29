@@ -8,14 +8,16 @@
 
 #include <iostream>
 #include "List.h"
+#include "BidirectionalList.h"
 //#include "RoundList.h"
 #include "menu.h"
 
 
 using namespace std;
+using ListIt = BidirectionalList<int>::Iterator;
 
 int main() {
-	List<int> ls1;
+	BidirectionalList<int> ls1;
 	MenuOption choice;
 
 	while ((choice = menu()) != EXIT) {
@@ -59,8 +61,12 @@ int main() {
 			break;
 
 		case PRINT:
-			for (List<int>::Iterator it;)
-			cout << ls1 << endl;
+			
+			for (ListIt it = ls1.rbegin(); it != ls1.rend(); --it) {
+				--(*it);
+				cout << *it << endl;
+			}
+			
 			break;
 
 		default:

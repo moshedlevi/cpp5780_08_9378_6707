@@ -1,98 +1,110 @@
 /*
-   File: List.h
+   File: BidirectionalList.h
    Description: this is header file of class List with sub-class Node
    Course: 150018 C++ Workshop
    Exercise 8, Question 1
    Authors: David Ovits 311179378, Moshe David Levi 200436707
 */
 
-#ifndef __LIST_H
-#define __LIST_H
+#ifndef __BIDIRECTIONALLIST_H
+#define __BIDIRECTIONALLIST_H
 
 #include <iostream>
 #include "iterators.h"
+#include "List.h"
 
 template <typename T>
-class List;
+class BidirectionalList;
 
-template <typename T> std::ostream& operator <<(std::ostream& out, const List<T>& rhs);
-template <typename T> std::istream& operator >>(std::istream& in, List<T>& rhs);
+template <typename T> std::ostream& operator <<(std::ostream& out, const BidirectionalList<T>& rhs);
+template <typename T> std::istream& operator >>(std::istream& in, BidirectionalList<T>& rhs);
 
 //------------------------------------------------
 // Class List - Arbitrary size Lists
 // Permits insertion and removal only from the front of the List
 //------------------------------------------------
 template <typename T>
-class List {
+class BidirectionalList : List<T> {
+    using List<T>::Node;
     
     protected:
     //--------------------------------------------
     // inner class Node a single element for the Nodeed List
     //--------------------------------------------
-    class Node {
+    class BiNode : public List<T>::Node {
+        using List<T>::Node::_value;
+
     protected:
-        T   _value;
-        Node* _next;
+        BiNode* _next = nullptr;
+        BiNode* _prev = nullptr;
     public:
         // constructor
-        Node(T);
-        Node(T, Node*);
-        Node(const Node&);
-        ~Node();
+        BiNode(T, BiNode*, BiNode*);
+        BiNode(const BiNode&);
+        ~BiNode();
         // data areas
-        T&   value(); // value by reference
-        Node* next() const;  // getter
-        void  next(Node*);   // setter
+        //T&   value(); // value by reference
+        BiNode* next() const;  // getter
+        void  next(BiNode*);   // setter
+        BiNode* prev() const;  // getter
+        void  prev(BiNode*);   // setter
     }; //end of class Node
 
     //template <typename T,typename R>
  
     
 public:
-    class Iterator : ForwardIterator<Node, T> {
+    class Iterator : public BidirectionalIterator<BiNode, T> {
         using ValueType = T;
-        using Pointer = Node*;
+        using Pointer = BiNode*;
         using Reference = T&;
-        using ForwardIterator<Node, T>::_p;
+        using ForwardIterator<BiNode, T>::_p;
 
     private:
         void advance() { _p = _p->next(); }
+        void reverse() { _p = _p->prev();  }
     public:
-        Iterator(Pointer p) : ForwardIterator<Node, T>(p) {}
+        Iterator(Pointer p) : BidirectionalIterator<BiNode, T>(p) {}
         Reference operator*() { return _p->value(); }
 
         bool operator==(const Iterator& rhs) const { return _p == rhs._p; }
         bool operator!=(const Iterator& rhs) const { return _p != rhs._p; }
         Iterator& operator++() { advance(); return *this; }
         Iterator operator++(int) { auto copy(*this); ++(*this); return copy; }
+        Iterator& operator--() { reverse(); return *this; }
+        Iterator operator--(int) { auto copy(*this); --(*this); return copy; }
+
 
         Iterator& operator = (const Iterator& rhs) { _p = rhs._p; }
     };
 
     Iterator begin() { return Iterator(head); }
     Iterator end() { return Iterator(nullptr); }
+    Iterator rbegin() { return Iterator(tail); }
+    Iterator rend() { return Iterator(nullptr); }
+
 
     // constructors
 
     // default constructor
-    List();
+    BidirectionalList();
 
     // copy constructor
-    List(const List&);
+    BidirectionalList(const BidirectionalList&);
 
     // move constructor
-    List(List&&);
+    BidirectionalList(BidirectionalList&&);
 
     // destructor
-    ~List();
+    //~BidirectionalList();
 
     // operations
 
     // Copy assignment
-    List& operator = (const List&);
+    BidirectionalList& operator = (const BidirectionalList&);
 
     // move assignment
-    List& operator = (List&&);
+    BidirectionalList& operator = (BidirectionalList&&);
 
     // add value to end of list
     void add(T value);
@@ -110,7 +122,7 @@ public:
     void removeFirst();
 
     // clear all nodes in list
-    virtual void clear();
+    void clear();
 
     // insert value by order in list
     void insert(const T value);
@@ -119,20 +131,21 @@ public:
     void remove(const T value);
 
     // extraction operator
-    friend std::ostream& operator << <>(std::ostream& out, const List& rhs);
+    friend std::ostream& operator << <>(std::ostream& out, const BidirectionalList& rhs);
     
     // insertion operator
-    friend std::istream& operator >> <>(std::istream& in, List& rhs);
-
+    friend std::istream& operator >> <>(std::istream& in, BidirectionalList& rhs);
+    /*
     // merge 2 list to new one
-    friend List& merge(const List& lst1,const List& lst2);
+    friend BidirectionalList& merge(const BidirectionalList& lst1,const BidirectionalList& lst2);
 
     // search if there is double value, remove one
-    friend List& makeSet(List& lst);
-
+    friend BidirectionalList& makeSet(BidirectionalList& lst);
+    */
 protected:
     // data field
-    Node* head = nullptr;
+    BiNode* head = nullptr;
+    BiNode* tail = nullptr;
 };
 
 /*
@@ -143,51 +156,57 @@ template <typename T> std::ostream& operator << (std::ostream& out, const List<T
 template <typename T> std::istream& operator >> (std::istream& in, List<T>& rhs);
 */
 // merge 2 list to new one
-template <typename T> List<T>& merge(const List<T>& lst1,const List<T>& lst2);
+template <typename T> BidirectionalList<T>& merge(const BidirectionalList<T>& lst1,const BidirectionalList<T>& lst2);
 
 // search if there is double value, remove one
-template <typename T> List<T>& makeSet(List<T>& lst);
+template <typename T> BidirectionalList<T>& makeSet(BidirectionalList<T>& lst);
 
 
 //------------------------------------------------
 // class Node implementation
 //------------------------------------------------
 template <typename T>
-List<T>::Node::Node(T val) : _value(val) {}
+BidirectionalList<T>::BiNode::BiNode(T val, BidirectionalList::BiNode* nxt, BidirectionalList::BiNode* prv) : List<T>::Node(val), _next(nxt), _prev(prv) {}
 
 template <typename T>
-List<T>::Node::Node(T val, List::Node* nxt) : _value(val), _next(nxt) {}
+BidirectionalList<T>::BiNode::BiNode(const BidirectionalList<T>::BiNode& src) : _value(src._value), _next(src._next), _prev(src._prev) {}
 
 template <typename T>
-List<T>::Node::Node(const List<T>::Node& src) : _value(src._value), _next(src._next) {}
-
-template <typename T>
-List<T>::Node::~Node()
+BidirectionalList<T>::BiNode::~BiNode()
 {
     next(nullptr);
+    prev(nullptr);
 }
 
-template <typename T>
-T& List<T>::Node::value() { return _value; }
+//template <typename T>
+//T& List<T>::Node::value() { return _value; }
 
 template <typename T>
-typename List<T>::Node* List<T>::Node::next() const { return _next; }
+typename BidirectionalList<T>::BiNode* BidirectionalList<T>::BiNode::next() const { return _next; }
 
 template <typename T>
-void List<T>::Node::next(Node* nxt) { _next = nxt; }
+typename BidirectionalList<T>::BiNode* BidirectionalList<T>::BiNode::prev() const { return _prev; }
+
+template <typename T>
+void BidirectionalList<T>::BiNode::next(BiNode* nxt) { _next = nxt; }
+
+template <typename T>
+void BidirectionalList<T>::BiNode::prev(BiNode* prv) { _prev = prv; }
 
 //--------------------------------------------
 // class List implementation
 //--------------------------------------------
 
+
 // default constructor
 template <typename T>
-List<T>::List() : head(nullptr) {}
+BidirectionalList<T>::BidirectionalList() : List<T>() {}
+
 
 // copy constructor
 template <typename T>
-List<T>::List(const List& other) {
-    Node* src, * trg;
+BidirectionalList<T>::BidirectionalList(const BidirectionalList& other) {
+    BiNode* src, * trg;
 
     // other list is empty
     if (other.head == nullptr)
@@ -196,7 +215,7 @@ List<T>::List(const List& other) {
     // other list isn't empty
     else {
         // create head node
-        head = new Node(other.head->value(), nullptr);
+        head = new BiNode(other.head->value(), nullptr, nullptr);
         if (head == nullptr)
             throw "failed in memory allocation";
 
@@ -204,75 +223,95 @@ List<T>::List(const List& other) {
         trg = head;
         // loop copy all nodes
         while (src->next() != nullptr) {
-            trg->next(new Node(src->next()->value(), nullptr));
+            trg->next(new BiNode(src->next()->value(), nullptr, trg));
             if (trg->next() == nullptr)
                 throw "failed in memory allocation";
+
             src = src->next();
             trg = trg->next();
         }
+
+        tail = trg;
+
     }
 }
 
 // move constructor
 template <typename T>
-List<T>::List(List&& other) {
+BidirectionalList<T>::BidirectionalList(BidirectionalList&& other) {
     // Keep the temp list is permanent
     head = other.head;
+    tail = other.tail;
     // Avoid destructing it in the temporary object
     other.head = nullptr;
+    other.tail = nullptr;
 }
 
+/*
 // destructor
 template <typename T>
 List<T>::~List() {
     clear();
 }
+*/
 
 // clear all nodes in list
 template <typename T>
-void List<T>::clear() {
+void BidirectionalList<T>::clear() {
     // empty all elements from the List
-    Node* next;
-    for (Node* p = head; p != nullptr; p = next) {
+    BiNode* next;
+    for (BiNode* p = head; p != nullptr; p = next) {
         // delete the element pointed to by p
         next = p->next();
         p->next(nullptr);
+        p->prev(nullptr);
         delete p;
     }
     // mark that the List contains no elements 
     head = nullptr;
+    tail = nullptr;
 }
 
 // get bool if list is empty
 template <typename T>
-bool List<T>::isEmpty() const {
+bool BidirectionalList<T>::isEmpty() const {
     // test to see if the List is empty
     // List is empty if the head pointer is null
     return head == nullptr;
 }
 
 template <typename T>
-void List<T>::add(T val) {
+void BidirectionalList<T>::add(T val) {
     //Add a new value to the front of a Nodeed List
-    head = new Node(val, head);
+    BiNode* oldHead = head;
+    head = new BiNode(val, head, nullptr);
+
+    if (tail == nullptr)
+        tail = head;
+
+    if (oldHead != nullptr)
+        oldHead->prev(head);
+
     if (head == nullptr)
         throw "failed in memory allocation";
 }
 
+
 // get value of head
 template <typename T>
-T List<T>::firstElement() const {
+T BidirectionalList<T>::firstElement() const {
     // return first value in List
     if (isEmpty())
         throw "the List is empty, no first Element";
+
     return head->value();
 }
 
 // search in list by value
 template <typename T>
-bool List<T>::search(const T& val) const {
+bool BidirectionalList<T>::search(const T& val) const {
     // loop to test each element
-    for (Node* p = head; p != nullptr; p = p->next())
+    for (BiNode* p = head; p != nullptr; p = p->next())
         if (val == p->value())
             return true;
     // not found
@@ -281,47 +320,63 @@ bool List<T>::search(const T& val) const {
 
 // insert value by order in list
 template <typename T>
-void List<T>::insert(const T val) {
-    Node* p = new Node(val, nullptr);
+void BidirectionalList<T>::insert(const T val) {
+    BiNode* p = new BiNode(val, nullptr, nullptr);
 
     if (isEmpty()) {
         head = p;
+        tail = p;
         return;
     }
 
     if (head->value() > val) {
         p->next(head);
+        head->prev(p);
         head = p;
         return;
     }
 
-    Node* src = head;
+    BiNode* src = head;
 
     while ((src->next() != nullptr) && (src->next()->value() < val)) {
         src = src->next();
     }
 
     p->next(src->next());
+    p->prev(src);
+    src->next()->prev(p);
     src->next(p);
+
+    if (p->next() == nullptr)
+        tail = p;
 
     return;
 }
 
 // remove node by value
 template <typename T>
-void List<T>::remove(const T val) {
+void BidirectionalList<T>::remove(const T val) {
 
     // if the list is empty, can't remove
     if (isEmpty())
         throw "value not found";
 
-    Node* p, * delNode;
+    BiNode* p, * delNode;
 
     // if the value in head, moving the head to next
     if (head->value() == val) {
         p = head;
         head = head->next();
+
+        if (head != nullptr) {
+            head->prev(nullptr);
+        }
+        else {
+            tail = nullptr;
+        }
+           
         p->next(nullptr);
+        p->prev(nullptr);
         delete p;
         return;
     }
@@ -339,7 +394,16 @@ void List<T>::remove(const T val) {
     // if the value to remove, move the nextptr to next
     delNode = p->next();
     p->next(delNode->next());
+
+    if (p->next() == nullptr) {
+        tail = p;
+    }
+    else {
+        p->next()->prev(p);
+    }
+
     delNode->next(nullptr);
+    delNode->prev(nullptr);
     delete delNode;
 
     return;
@@ -347,36 +411,45 @@ void List<T>::remove(const T val) {
 
 // remove first item in list
 template <typename T>
-void List<T>::removeFirst() {
+void BidirectionalList<T>::removeFirst() {
     // make sure there is a first element
     if (isEmpty())
         throw "the List is empty, no Elements to remove";
 
     // save pointer to the removed node
-    Node* p = head;
+    BiNode* p = head;
     // reassign the first node
     head = p->next();
+    if (head != nullptr) {
+        head->prev(nullptr);
+    }
+    else {
+        tail = nullptr;
+    }
+    
     p->next(nullptr);
+    p->prev(nullptr);
     // recover memory used by the first element
     delete p;
 }
 
 // operator = copy assignment
 template <typename T>
-List<T>& List<T>::operator = (const List& other) {
+BidirectionalList<T>& BidirectionalList<T>::operator = (const BidirectionalList& other) {
 
     if (this == &other)
         return *this;
 
-    Node* src, * trg;
+    BiNode* src, * trg;
 
     // if other is null, set null to head
-    if (other.head == nullptr) {
+    if (other.head == nullptr){
         head = nullptr;
+        tail = nullptr;
     }
     else {
         // copy head
-        head = new Node(other.head->value(), nullptr);
+        head = new BiNode(other.head->value(), nullptr, nullptr);
         if (head == nullptr)
             throw "failed in memory allocation";
 
@@ -385,12 +458,14 @@ List<T>& List<T>::operator = (const List& other) {
 
         // loop to copy until end of list
         while (src->next() != nullptr) {
-            trg->next(new Node(src->next()->value(), nullptr));
+            trg->next(new Node(src->next()->value(), nullptr, trg));
             if (trg->next() == nullptr)
                 throw "failed in memory allocation";
             src = src->next();
             trg = trg->next();
         }
+
+        tail = trg;
     }
 
     return *this;
@@ -398,26 +473,28 @@ List<T>& List<T>::operator = (const List& other) {
 
 // operator = move assignment
 template <typename T>
-List<T>& List<T>::operator = (List&& other) {
+BidirectionalList<T>& BidirectionalList<T>::operator = (BidirectionalList&& other) {
 
     // Keep the temp list is permanent
     head = other.head;
+    tail = other.tail;
 
     // Avoid destructing it in the temporary object
     other.head = nullptr;
+    other.tail = nullptr;
 
     return *this;
 }
 
 // extraction operator
 template <typename T>
-std::ostream& operator<<(std::ostream& out, const List<T>& rhs)
+std::ostream& operator<<(std::ostream& out, const BidirectionalList<T>& rhs)
 {
     if (rhs.isEmpty())
         return out;
 
     // loop for cout all items to end of list
-    for (typename List<T>::Node* p = rhs.head; p != nullptr; p = p->next())
+    for (typename BidirectionalList<T>::BiNode* p = rhs.head; p != nullptr; p = p->next())
         out << p->value() << (p->next() != nullptr ? ", " : "");
 
     return out;
@@ -425,7 +502,7 @@ std::ostream& operator<<(std::ostream& out, const List<T>& rhs)
 
 // insertion operator
 template <typename T>
-std::istream& operator>>(std::istream& in, List<T>& rhs)
+std::istream& operator>>(std::istream& in, BidirectionalList<T>& rhs)
 {
     int val, last;
     in >> val;
@@ -440,9 +517,10 @@ std::istream& operator>>(std::istream& in, List<T>& rhs)
     return in;
 }
 
+/*
 // merge 2 list to new one
 template <typename T>
-List<T>& merge(const List<T>& lst1, const List<T>& lst2)
+BidirectionalList<T>& merge(const BidirectionalList<T>& lst1, const BidirectionalList<T>& lst2)
 {
     List* newList = new List;
     List::Node* n1, * n2;
@@ -489,8 +567,8 @@ List<T>& makeSet(List<T>& lst)
     }
 
     return lst;
-}
+}*/
 
-#endif //__LIST_H
+#endif //__BIDIRECTIONALLIST_H
 
 

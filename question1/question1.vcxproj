@@ -144,6 +144,7 @@
     <ClCompile Include="RoundList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BidirectionalList.h" />
     <ClInclude Include="example.h" />
     <ClInclude Include="iterators.h" />
     <ClInclude Include="List.h" />
