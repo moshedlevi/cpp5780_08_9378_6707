@@ -78,10 +78,10 @@ public:
         Iterator& operator = (const Iterator& rhs) { _p = rhs._p; }
     };
 
-    const Iterator& begin() { return Iterator(head); }
-    Iterator end() { return Iterator(nullptr); }
-    const Iterator& rbegin() { return Iterator(tail); }
-    Iterator rend() { return Iterator(nullptr); }
+    const Iterator begin() const { return Iterator(head); }
+    const Iterator end() const { return Iterator(nullptr); }
+    const Iterator rbegin() const { return Iterator(tail); }
+    const Iterator rend() const { return Iterator(nullptr); }
 
 
     // constructors
