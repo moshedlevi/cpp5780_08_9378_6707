@@ -130,28 +130,7 @@ public:
     // insertion operator
     friend std::istream& operator >> <>(std::istream& in, List& rhs);
 
-    // merge 2 list to new one
-    friend List& merge(const List& lst1,const List& lst2);
-
-    // search if there is double value, remove one
-    friend List& makeSet(List& lst);
-
-
 };
-
-/*
-// extraction operator
-template <typename T> std::ostream& operator << (std::ostream& out, const List<T>& rhs);
-
-// insertion operator
-template <typename T> std::istream& operator >> (std::istream& in, List<T>& rhs);
-*/
-// merge 2 list to new one
-template <typename T> List<T>& merge(const List<T>& lst1,const List<T>& lst2);
-
-// search if there is double value, remove one
-template <typename T> List<T>& makeSet(List<T>& lst);
-
 
 //------------------------------------------------
 // class Node implementation
@@ -445,56 +424,6 @@ std::istream& operator>>(std::istream& in, List<T>& rhs)
     return in;
 }
 
-// merge 2 list to new one
-template <typename T>
-List<T>& merge(const List<T>& lst1, const List<T>& lst2)
-{
-    List* newList = new List;
-    List::Node* n1, * n2;
-    n1 = lst1.head;
-    n2 = lst2.head;
-
-    // loop while any of list isn't end
-    while ((n1 != nullptr) || (n2 != nullptr)) {
-
-        // if end of lst1 or value of lst1 grather than lst2, insert from lst2
-        if ((n1 == nullptr) || ((n2 != nullptr) && (n1->value() > n2->value()))) {
-            newList->insert(n2->value());
-            n2 = n2->next();
-        }
-        // if end of lst2 or value of lst1 smaller than lst2, insert from lst1
-        else {
-            newList->insert(n1->value());
-            n1 = n1->next();
-        }
-    }
-
-    return *newList;
-}
-
-// search if there is double value, remove one
-template <typename T>
-List<T>& makeSet(List<T>& lst)
-{
-    List::Node* p, * delNode;
-
-    p = lst.head;
-
-    // loop to the end
-    while (p != nullptr) {
-        // if next isn't null, and current value equal to next, remove
-        if ((p->next() != nullptr) && (p->value() == p->next()->value())) {
-            delNode = p->next();
-            p->next(p->next()->next());
-            delNode->next(nullptr);
-            delete delNode;
-        }
-
-        p = p->next();
-    }
-
-    return lst;
-}
 
 #endif //__LIST_H
 

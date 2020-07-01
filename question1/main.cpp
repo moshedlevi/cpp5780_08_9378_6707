@@ -72,7 +72,7 @@ int main() {
 
 		case PRINT_BILIST:
 
-			for (ListIt it = ls1.begin(); it != ls1.end(); --it) {
+			for (ListIt it = ls1.begin(); it != ls1.end(); ++it) {
 				cout << *it << endl;
 			}
 
