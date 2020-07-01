@@ -25,7 +25,7 @@ template <typename T> std::istream& operator >>(std::istream& in, List<T>& rhs);
 template <typename T>
 class List {
     
-    protected:
+protected:
     //--------------------------------------------
     // inner class Node a single element for the Nodeed List
     //--------------------------------------------
@@ -46,12 +46,17 @@ class List {
     }; //end of class Node
 
     //template <typename T,typename R>
- 
+    // data field
+    Node* head = nullptr;
+
     
 public:
-    class Iterator : ForwardIterator<Node, T> {
+    class Iterator : public ForwardIterator<Node, T> {
     private:
-        void advance() { _p = _p->next(); }
+        List* _list;
+
+        void advance() override  { if (_p == nullptr) _p = _list->head; else _p = (Node*)_p->next(); }
+        //void advance() { _p = _p->next(); }
     public:
         using ValueType = T;
         using Pointer = Node*;
@@ -59,6 +64,7 @@ public:
         using ForwardIterator<Node, T>::_p;
 
         Iterator(Pointer p) : ForwardIterator<Node, T>(p) {}
+        Iterator(Pointer p, List* list) : ForwardIterator<Node, T>(p), _list(list) {}
         Reference operator*() { return _p->value(); }
 
         bool operator==(const Iterator& rhs) const { return _p == rhs._p; }
@@ -66,7 +72,7 @@ public:
         Iterator& operator++() { advance(); return *this; }
         Iterator operator++(int) { auto copy(*this); ++(*this); return copy; }
 
-        Iterator& operator = (const Iterator& rhs) { _p = rhs._p; }
+        Iterator& operator = (const Iterator& rhs) { _p = rhs._p; _list = rhs._list; return *this; }
     };
 
     const Iterator begin() const { return Iterator(head); }
@@ -130,9 +136,7 @@ public:
     // search if there is double value, remove one
     friend List& makeSet(List& lst);
 
-protected:
-    // data field
-    Node* head = nullptr;
+
 };
 
 /*

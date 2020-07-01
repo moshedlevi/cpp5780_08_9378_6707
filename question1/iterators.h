@@ -19,6 +19,7 @@ public:
     using Reference = R&;
 
     ForwardIterator(Pointer p) : _p(p) {}
+
     virtual void advance() = 0;
     Reference operator*() { return *_p; }
     Pointer operator->() const { return _p; }
@@ -31,14 +32,16 @@ public:
 
 template <typename T, typename R>
 class BidirectionalIterator : public ForwardIterator<T,R> {
+public:
     using ValueType = R;
     using Pointer = T*;
     using Reference = R&;
     using ForwardIterator<T, R>::_p;
-public:
+    using ForwardIterator<T, R>::advance;
+
     BidirectionalIterator(Pointer p) : ForwardIterator<T, R>(p) {}
     Reference operator*() { return *_p; }
-    virtual void advance() = 0;
+    //virtual void advance() = 0;
     virtual void reverse() = 0;
     bool operator==(const BidirectionalIterator& rhs) const { return _p == rhs._p; }
     bool operator!=(const BidirectionalIterator& rhs) const { return _p != rhs._p; }

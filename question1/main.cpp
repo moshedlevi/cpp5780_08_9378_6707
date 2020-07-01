@@ -62,16 +62,17 @@ int main() {
 			break;
 
 		case PRINT_LIST:
-			
-			for (List<int>::Iterator it = static_cast<List<int>>(ls1).begin(); it != static_cast<List<int>>(ls1).end(); ++it) {
-				cout << *it << endl;
+			{
+				List<int>& lsOneDir = ls1;
+				for (List<int>::Iterator it = lsOneDir.begin(); it != lsOneDir.end(); ++it) {
+					cout << *it << endl;
+				}
 			}
-			
 			break;
 
 		case PRINT_BILIST:
 
-			for (ListIt it = ls1.rbegin(); it != ls1.rend(); --it) {
+			for (ListIt it = ls1.begin(); it != ls1.end(); --it) {
 				cout << *it << endl;
 			}
 
