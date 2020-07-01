@@ -244,9 +244,8 @@ template <typename T>
 void BidirectionalList<T>::clear() {
 
     tail = nullptr;
+    List<T>::clear();
 
-    List<T>& ls = *this;
-    ls.clear();
 }
 
 // get bool if list is empty
