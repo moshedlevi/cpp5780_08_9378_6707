@@ -56,16 +56,23 @@ class BidirectionalList : public List<T> {
 public:
     class Iterator : public BidirectionalIterator<BiNode, T> {
 
-    private:
-        void advance() { _p = _p->next(); }
-        void reverse() { _p = _p->prev();  }
     public:
         using ValueType = T;
         using Pointer = BiNode*;
         using Reference = T&;
         using ForwardIterator<BiNode, T>::_p;
 
+    protected:
+        Pointer _head;
+        Pointer _tail;
+
+    private:
+        void advance() { if (_p == nullptr) _p = _head; else _p = _p->next(); }
+        void reverse() { if (_p == nullptr) _p = _tail; else _p = _p->prev(); }
+
+    public:
         Iterator(Pointer p) : BidirectionalIterator<BiNode, T>(p) {}
+        Iterator(Pointer p, Pointer head, Pointer tail) : BidirectionalIterator<BiNode, T>(p), _head(head), _tail(tail) {}
         Reference operator*() { return _p->value(); }
 
         bool operator==(const Iterator& rhs) const { return _p == rhs._p; }
@@ -78,10 +85,10 @@ public:
         Iterator& operator = (const Iterator& rhs) { _p = rhs._p; return *this;}
     };
 
-    const Iterator begin() const { return Iterator(head); }
-    const Iterator end() const { return Iterator(nullptr); }
-    const Iterator rbegin() const { return Iterator(tail); }
-    const Iterator rend() const { return Iterator(nullptr); }
+    const Iterator begin() const {  return Iterator(head, head, tail); }
+    const Iterator end() const { return Iterator(nullptr,head,tail); }
+    const Iterator rbegin() const { return Iterator(tail, head, tail); }
+    const Iterator rend() const { return Iterator(nullptr, head, tail); }
 
 
     // constructors

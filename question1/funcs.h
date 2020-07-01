@@ -24,12 +24,12 @@ I max(I first, I last) { // not including last
 template <typename T>
 void swap(T& varA, T& varB) {
     if (sizeof(varA) <= 4) {
-        T tmp = new T(varA);
+        T tmp = varA;
         varA = varB;
         varB = tmp;
     }
     else {
-        char tmp[sizeof(varA)];
+        T* tmp = &varA;;
         std::memcpy(tmp, &varA, sizeof(varA));
         std::memmove(&varA, &varB, sizeof(varA));
         std::memcpy(&varB, &tmp, sizeof(varA));
@@ -48,13 +48,13 @@ I partition(I begin, I end,
             //if (*it <= *end)
             if (comparator(*it, *end)<=0)
             {
-                swap<I::Reference>(*i, *it);
+                swap(*i, *it);
                 ++i;
             }
             ++it;
         }
 
-        swap<I::Reference>(*i, *end);
+        swap(*i, *end);
         return i;
 
 }
@@ -63,11 +63,16 @@ template <typename I>
 void sort(I begin, I end,
     int (*comparator)(typename I::Reference, typename I::Reference)) {
     
-        if (begin != end)
+        I right = end;
+        right--;
+    
+        if (begin != right)
         {
-            I q = partition<I>(begin, end, comparator); //5
-            sort<I>(begin, --q, comparator); //4
-            sort<I>(++(++q), end, comparator); //6
+            I q = partition<I>(begin, right, comparator); //5
+            if (q != begin)
+                sort<I>(begin, q, comparator); //4
+            if (q != right)
+                sort<I>(q++, end, comparator); //6
         }
 }
 

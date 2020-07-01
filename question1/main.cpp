@@ -63,7 +63,7 @@ int main() {
 
 		case PRINT_LIST:
 			
-			for (ListIt it = ls1.begin(); it != ls1.end(); ++it) {
+			for (List<int>::Iterator it = static_cast<List<int>>(ls1).begin(); it != static_cast<List<int>>(ls1).end(); ++it) {
 				cout << *it << endl;
 			}
 			
@@ -85,7 +85,7 @@ int main() {
 				break;
 			}
 		case SORT:
-			sort<ListIt>(ls1.begin(), ls1.rbegin(),
+			sort<ListIt>(ls1.begin(), ls1.end(),
 				[](typename ListIt::Reference varA, typename ListIt::Reference varB) {
  					if (varA < varB)
 						return -1;
