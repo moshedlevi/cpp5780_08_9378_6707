@@ -2,7 +2,7 @@
    File: menu.cpp
    Description: this is implement file of enum for menu options
    Course: 150018 C++ Workshop
-   Exercise 6, Question 1
+   Exercise 8, Question 1
    Authors: David Ovits 311179378, Moshe David Levi 200436707
 */
 

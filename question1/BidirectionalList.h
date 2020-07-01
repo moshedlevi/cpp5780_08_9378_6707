@@ -1,6 +1,7 @@
 /*
    File: BidirectionalList.h
-   Description: this is header file of class List with sub-class Node
+   Description: this is header file of template class BidirectionalList with sub-class Node inherit from List and List::Node
+                subclass Iterator, inherit from BidirectionalIterator
    Course: 150018 C++ Workshop
    Exercise 8, Question 1
    Authors: David Ovits 311179378, Moshe David Levi 200436707
@@ -56,9 +57,7 @@ public:
     class Iterator : public BidirectionalIterator<Node, T> {
 
     private:
-        //BidirectionalList<T>* _list = nullptr;
-        Node* _head;
-        Node* _tail;
+        const BidirectionalList<T>* _list = nullptr;
 
     public:
         using ValueType = T;
@@ -66,15 +65,11 @@ public:
         using Reference = T&;
         using BidirectionalIterator<Node, T>::_p;
 
-        //Iterator(Pointer p, BidirectionalList<T>* list) : BidirectionalIterator<Node, T>(p), _list(list) {}
-        Iterator(Pointer p,Node* head, Node* tail) : BidirectionalIterator<Node, T>(p), _head(head), _tail(tail) {}
+        Iterator(Pointer p,const BidirectionalList<T>* list) : BidirectionalIterator<Node, T>(p), _list(list) {}
 
     private:
-        //void advance() override { if (_p == nullptr) _p = (Node*)_list->head; else _p = (Node*)_p->next(); }
-        //void reverse() override { if (_p == nullptr) _p = _list->tail; else _p = _p->prev(); }
-
-        void advance() override { if (_p == nullptr) _p = _head; else _p = (Node*)_p->next(); }
-        void reverse() override { if (_p == nullptr) _p = _tail; else _p = _p->prev(); }
+        void advance() override { if (_p == nullptr) _p = (Node*)_list->head; else _p = (Node*)_p->next(); }
+        void reverse() override { if (_p == nullptr) _p = _list->tail; else _p = _p->prev(); }
 
     public:
         Reference operator*() { return _p->value(); }
@@ -86,8 +81,7 @@ public:
         Iterator& operator--() { reverse(); return *this; }
         Iterator operator--(int) { auto copy(*this); --(*this); return copy; }
 
-        //Iterator& operator = (const Iterator& rhs) { _p = rhs._p; _list = rhs._list; return *this; }
-        Iterator& operator = (const Iterator& rhs) { _p = rhs._p; _head = rhs._head; _tail = rhs._tail; return *this; }
+        Iterator& operator = (const Iterator& rhs) { _p = rhs._p; _list = rhs._list; return *this; }
     };
 
     // constructors
@@ -136,17 +130,12 @@ public:
     // remove node by value
     void remove(const T value);
 
-    /*
+    
     const Iterator begin() const { return Iterator(static_cast<Node*>(head), this); }
     const Iterator end() const { return Iterator(nullptr, this); }
     const Iterator rbegin() const { return Iterator(tail, this); }
     const Iterator rend() const { return Iterator(nullptr, this); }
-    */
-
-    const Iterator begin() const { return Iterator(static_cast<Node*>(head), static_cast<Node*>(head), tail); }
-    const Iterator end() const { return Iterator(nullptr, static_cast<Node*>(head), tail); }
-    const Iterator rbegin() const { return Iterator(tail, static_cast<Node*>(head), tail); }
-    const Iterator rend() const { return Iterator(nullptr, static_cast<Node*>(head), tail); }
+   
 
     // extraction operator
     friend std::ostream& operator << <>(std::ostream& out, const BidirectionalList& rhs);
@@ -273,40 +262,7 @@ void BidirectionalList<T>::add(T val) {
         throw "failed in memory allocation";
 }
 
-/*
-// get value of head
-template <typename T>
-T BidirectionalList<T>::firstElement() const {
-    // return first value in List
-    if (isEmpty())
-        throw "the List is empty, no first Element";
-
-    return head->value();
-}
-
-
-// search in list by value
-template <typename T>
-bool BidirectionalList<T>::search(const T& val) const {
-    // loop to test each element
-    for (BiNode* p = head; p != nullptr; p = p->next())
-        if (val == p->value())
-            return true;
-    // not found
-    return false;
-}
-// search in list by value
-template <typename T>
-bool BidirectionalList<T>::search(const T val) const {
-    // loop to test each element
-    for (auto it = begin(); it != end(); ++it)
-        if (val == *it)
-            return true;
-    // not found
-    return false;
-}*/
-
-// insert value by order in list
+/// insert value by order in list
 template <typename T>
 void  BidirectionalList<T>::insert(const T val) {
     Node* p = new Node(val, nullptr, nullptr);
@@ -332,7 +288,10 @@ void  BidirectionalList<T>::insert(const T val) {
 
     p->next(src->next());
     p->prev(src);
-    static_cast<Node*>(src->next())->prev(p);
+
+    if (src->next()!=nullptr)
+        static_cast<Node*>(src->next())->prev(p);
+
     src->next((typename List<T>::Node*)p);
 
     if (p->next() == nullptr)
@@ -505,58 +464,6 @@ std::istream& operator>>(std::istream& in, BidirectionalList<T>& rhs)
 
     return in;
 }
-
-/*
-// merge 2 list to new one
-template <typename T>
-BidirectionalList<T>& merge(const BidirectionalList<T>& lst1, const BidirectionalList<T>& lst2)
-{
-    List* newList = new List;
-    List::Node* n1, * n2;
-    n1 = lst1.head;
-    n2 = lst2.head;
-
-    // loop while any of list isn't end
-    while ((n1 != nullptr) || (n2 != nullptr)) {
-
-        // if end of lst1 or value of lst1 grather than lst2, insert from lst2
-        if ((n1 == nullptr) || ((n2 != nullptr) && (n1->value() > n2->value()))) {
-            newList->insert(n2->value());
-            n2 = n2->next();
-        }
-        // if end of lst2 or value of lst1 smaller than lst2, insert from lst1
-        else {
-            newList->insert(n1->value());
-            n1 = n1->next();
-        }
-    }
-
-    return *newList;
-}
-
-// search if there is double value, remove one
-template <typename T>
-List<T>& makeSet(List<T>& lst)
-{
-    List::Node* p, * delNode;
-
-    p = lst.head;
-
-    // loop to the end
-    while (p != nullptr) {
-        // if next isn't null, and current value equal to next, remove
-        if ((p->next() != nullptr) && (p->value() == p->next()->value())) {
-            delNode = p->next();
-            p->next(p->next()->next());
-            delNode->next(nullptr);
-            delete delNode;
-        }
-
-        p = p->next();
-    }
-
-    return lst;
-}*/
 
 #endif //__BIDIRECTIONALLIST_H
 

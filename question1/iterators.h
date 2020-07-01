@@ -1,6 +1,6 @@
 /*
    File: iterators.h
-   Description: this is header file of class List with sub-class Node
+   Description: this is header file of template basic abstract iterators: ForwardIterator and son class BidirectionalIterator
    Course: 150018 C++ Workshop
    Exercise 8, Question 1
    Authors: David Ovits 311179378, Moshe David Levi 200436707
@@ -41,7 +41,7 @@ public:
 
     BidirectionalIterator(Pointer p) : ForwardIterator<T, R>(p) {}
     Reference operator*() { return *_p; }
-    //virtual void advance() = 0;
+    
     virtual void reverse() = 0;
     bool operator==(const BidirectionalIterator& rhs) const { return _p == rhs._p; }
     bool operator!=(const BidirectionalIterator& rhs) const { return _p != rhs._p; }

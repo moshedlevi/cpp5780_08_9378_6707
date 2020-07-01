@@ -1,6 +1,7 @@
 /*
    File: List.h
-   Description: this is header file of class List with sub-class Node
+   Description: this is header file of template class List with sub-class Node
+                    sub class iterator, inherit from forward iterator
    Course: 150018 C++ Workshop
    Exercise 8, Question 1
    Authors: David Ovits 311179378, Moshe David Levi 200436707
@@ -45,10 +46,8 @@ protected:
         void  next(Node*);   // setter
     }; //end of class Node
 
-    //template <typename T,typename R>
     // data field
     Node* head = nullptr;
-
     
 public:
     class Iterator : public ForwardIterator<Node, T> {
@@ -56,7 +55,7 @@ public:
         List* _list;
 
         void advance() override  { if (_p == nullptr) _p = _list->head; else _p = (Node*)_p->next(); }
-        //void advance() { _p = _p->next(); }
+
     public:
         using ValueType = T;
         using Pointer = Node*;

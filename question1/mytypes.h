@@ -2,7 +2,7 @@
    File: mytypes.h
    Description: This is the header file with all the declarations for my types
    Course: 150018 C++ Workshop
-   Exercise 5, Question 2.2
+   Exercise 8, Question 1
    Authors: David Ovits 311179378, Moshe David Levi 200436707
 */
 

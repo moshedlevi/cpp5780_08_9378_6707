@@ -1,6 +1,6 @@
 /*
    File: main.cpp
-   Description: this is main program file for test RoundList class
+   Description: this is main program file for test template class BidirectionalList and iterators
    Course: 150018 C++ Workshop
    Exercise 8, Question 1
    Authors: David Ovits 311179378, Moshe David Levi 200436707
@@ -47,7 +47,7 @@ int main() {
 		case SEARCH:
 			cout << "Enter a number: ";
 			cin >> num;
-			cout << ls1.search(num) << endl;
+			cout << num << " is " << (ls1.search(num)?"":"Not ") << "in list." << endl;
 			break;
 
 		case CLEAR:
@@ -56,9 +56,9 @@ int main() {
 
 		case EMPTY:
 			if (ls1.isEmpty())
-				cout << "Empty" << endl;
+				cout << "the list is Empty" << endl;
 			else
-				cout << "Not empty" << endl;
+				cout << "the list is Not empty" << endl;
 			break;
 
 		case PRINT_LIST:

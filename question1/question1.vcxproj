@@ -140,18 +140,14 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
-    <ClCompile Include="mytypes.cpp" />
-    <ClCompile Include="RoundList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BidirectionalList.h" />
-    <ClInclude Include="example.h" />
     <ClInclude Include="funcs.h" />
     <ClInclude Include="iterators.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="mytypes.h" />
-    <ClInclude Include="RoundList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
