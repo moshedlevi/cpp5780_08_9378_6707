@@ -19,8 +19,8 @@ MenuOption operator++(MenuOption& rhs) {
 
 const char* MenuOptionLine[LAST_MENU_OPTION + 1] {
 	"Exit",
-	"Add to the beginning of the list",
-	"Add to the end of the list",
+	"Add 5 num. to the beginning of the list",
+	"Add 5 num. to the list",
 	"Remove first from list",
 	"Search in the list",
 	"Clear the list",

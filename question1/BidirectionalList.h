@@ -308,7 +308,7 @@ bool BidirectionalList<T>::search(const T val) const {
 
 // insert value by order in list
 template <typename T>
-void BidirectionalList<T>::insert(const T val) {
+void  BidirectionalList<T>::insert(const T val) {
     Node* p = new Node(val, nullptr, nullptr);
 
     if (isEmpty()) {
@@ -318,22 +318,22 @@ void BidirectionalList<T>::insert(const T val) {
     }
 
     if (head->value() > val) {
-        p->next((typename List<T>::Node)head);
-        head->prev(p);
+        p->next((typename List<T>::Node*)head);
+        static_cast<Node*>(head)->prev(p);
         head = p;
         return;
     }
 
-    Node* src = head;
+    Node* src = (Node*)head;
 
     while ((src->next() != nullptr) && (src->next()->value() < val)) {
-        src = src->next();
+        src = static_cast<Node*>(src->next());
     }
 
-    p->next((typename List<T>::Node)src->next());
+    p->next(src->next());
     p->prev(src);
-    src->next()->prev(p);
-    src->next((typename List<T>::Node)p);
+    static_cast<Node*>(src->next())->prev(p);
+    src->next((typename List<T>::Node*)p);
 
     if (p->next() == nullptr)
         tail = p;

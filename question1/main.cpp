@@ -36,7 +36,7 @@ int main() {
 			cout << "Enter 5 numbers: ";
 			for (int i = 0; i < 5; i++) {
 				cin >> num;
-				//ls1.addToEnd(num);
+				ls1.insert(num);
 			}
 			break;
 
